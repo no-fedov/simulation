@@ -13,14 +13,14 @@ public class Herbivore extends Creature {
 
     @Override
     protected final void attack(Position enemyPosition, Field field) {
-        Entity enemy = field.getEntityByPosition(enemyPosition).orElseThrow();
+        Entity enemy = field.getEntity(enemyPosition).orElseThrow();
         if (enemy.getClass().equals(moveCondition())) {
             field.remove(enemyPosition);
         }
     }
 
     @Override
-    public Class<Grass> moveCondition() {
+    public Class<? extends Entity> moveCondition() {
         return Grass.class;
     }
 

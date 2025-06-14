@@ -1,10 +1,11 @@
 package com.simulation.entity.movable;
 
+import com.simulation.entity.Entity;
 import com.simulation.field.Field;
 
 public interface Movable {
 
     void makeMove(Field field);
 
-    Class<?> moveCondition();
+    Class<? extends Entity> moveCondition();
 }

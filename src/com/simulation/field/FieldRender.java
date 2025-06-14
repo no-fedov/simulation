@@ -24,7 +24,7 @@ public class FieldRender {
 
     public FieldRender(Field field) {
         this.field = field;
-        representation = new String[field.getRowCount()][field.getColumnCount()];
+        representation = new String[field.getHeight()][field.getWidth()];
     }
 
     public void render() {
@@ -40,7 +40,7 @@ public class FieldRender {
     }
 
     private void setRepresent(Position position, Entity entity) {
-        representation[position.getRow()][position.getColumn()] = entity.toString();
+        representation[position.row()][position.column()] = entity.toString();
     }
 
     private void init() {

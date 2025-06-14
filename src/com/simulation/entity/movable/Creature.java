@@ -3,6 +3,7 @@ package com.simulation.entity.movable;
 import com.simulation.entity.Entity;
 import com.simulation.field.Field;
 import com.simulation.field.Position;
+import com.simulation.util.FieldUtil;
 
 import java.util.List;
 
@@ -22,8 +23,8 @@ public abstract class Creature extends Entity implements Movable {
     }
 
     public final void makeMove(Field field) {
-        Position position = field.getPositionByEntity(this).orElseThrow();
-        List<Position> path = searchPath(this, position, field);
+        Position position = FieldUtil.getPosition(this, field).orElseThrow();
+        List<Position> path = searchPath(position, field, moveCondition());
         switch (path.size()) {
             case NO_TARGET_FOR_MOVE:
                 break;
@@ -31,6 +32,7 @@ public abstract class Creature extends Entity implements Movable {
                 attack(path.get(path.size() - 1), field);
                 break;
             default:
+                field.remove(position);
                 if (path.size() <= speed) {
                     field.put(path.get(path.size() - 2), this);
                     attack(path.get(path.size() - 1), field);

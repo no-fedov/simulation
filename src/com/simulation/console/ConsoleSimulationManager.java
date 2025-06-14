@@ -4,16 +4,16 @@ import com.simulation.simulation.Simulation;
 
 import java.util.Scanner;
 
-public class ConsoleManagementSimulation {
+public class ConsoleSimulationManager {
 
-    private static final String START = "S";
-    private static final String PAUSE = "P";
-    private static final String QUIT = "Q";
+    public static final String START = "S";
+    public static final String PAUSE = "P";
+    public static final String QUIT = "Q";
 
     private final Scanner scanner = new Scanner(System.in);
     private final Simulation simulation;
 
-    public ConsoleManagementSimulation(Simulation simulation) {
+    public ConsoleSimulationManager(Simulation simulation) {
         this.simulation = simulation;
     }
 

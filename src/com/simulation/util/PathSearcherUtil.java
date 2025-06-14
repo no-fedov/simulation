@@ -1,7 +1,6 @@
 package com.simulation.util;
 
 import com.simulation.entity.Entity;
-import com.simulation.entity.movable.Movable;
 import com.simulation.field.Field;
 import com.simulation.field.Position;
 
@@ -26,13 +25,13 @@ public class PathSearcherUtil {
     private PathSearcherUtil() {
     }
 
-    public static <T extends Entity & Movable> List<Position> searchPath(T entity,
-                                                                         Position currentPosition,
-                                                                         Field field) {
-        Queue<Position> positions = new LinkedList<>(List.of(currentPosition));
+    public static List<Position> searchPath(Position startPosition,
+                                            Field field,
+                                            Class<? extends Entity> target) {
+        Queue<Position> positions = new LinkedList<>(List.of(startPosition));
         Set<Position> checkedPosition = new HashSet<>();
         Map<Position, Position> pathMap = new HashMap<>();
-        pathMap.put(currentPosition, null);
+        pathMap.put(startPosition, null);
 
         while (!positions.isEmpty()) {
             Position positionForCheck = positions.poll();
@@ -41,25 +40,25 @@ public class PathSearcherUtil {
             }
             Set<Position> neighbourPositions = neighboursPosition(positionForCheck, field);
             Set<Position> positionsWithEntity = positionsByCondition(neighbourPositions,
-                    position -> field.getEntityByPosition(position).isPresent());
+                    position -> field.getEntity(position).isPresent());
             for (Position position : positionsWithEntity) {
-                Entity entityForCheck = field.getEntityByPosition(position).orElseThrow();
-                if (entityForCheck.getClass().equals(entity.moveCondition())) {
+                Entity entityForCheck = field.getEntity(position).orElseThrow();
+                if (entityForCheck.getClass().equals(target)) {
                     pathMap.put(position, positionForCheck);
                     return getPath(pathMap, position);
                 }
             }
             Set<Position> positionsWithoutEntity = positionsByCondition(neighbourPositions,
-                    position -> field.getEntityByPosition(position).isEmpty());
+                    position -> field.getEntity(position).isEmpty());
             fillPathMap(pathMap, positionsWithoutEntity, positionForCheck);
             positions.addAll(positionsWithoutEntity);
             checkedPosition.add(positionForCheck);
         }
-        return List.of(currentPosition);
+        return List.of(startPosition);
     }
 
     private static Set<Position> positionsByCondition(Set<Position> positions,
-                                                    Predicate<Position> condition) {
+                                                      Predicate<Position> condition) {
         return positions.stream()
                 .filter(condition)
                 .collect(Collectors.toSet());
@@ -69,10 +68,10 @@ public class PathSearcherUtil {
         Set<Position> positions = new HashSet<>();
         for (int[] positionShift : MATRIX_FOR_NEIGHBOURS) {
             Position neighbour = new Position(
-                    position.getRow() + positionShift[ROW_INDEX],
-                    position.getColumn() + positionShift[COLUMN_INDEX]
+                    position.row() + positionShift[ROW_INDEX],
+                    position.column() + positionShift[COLUMN_INDEX]
             );
-            if (PositionUtil.isValid(neighbour, field)) {
+            if (FieldUtil.isValid(neighbour, field)) {
                 positions.add(neighbour);
             }
         }

@@ -11,6 +11,7 @@ import java.util.Random;
 
 public class EntityFactory {
 
+    private static final int MINIMAL_VALUE_ENTITY_PARAMETER = 1;
     private static final int MAX_HEALTH = 100;
     private static final int MAX_SPEED = 10;
     private static final int MAX_ATTACK = 15;
@@ -21,15 +22,17 @@ public class EntityFactory {
         this.random = random;
     }
 
-    public Entity generate(Class<?> classZ) {
-        return switch (classZ.getSimpleName()) {
+    public Entity generate(Class<?> clazz) {
+        return switch (clazz.getSimpleName()) {
             case "Grass" -> new Grass();
             case "Rock" -> new Rock();
             case "Tree" -> new Tree();
-            case "Herbivore" -> new Herbivore(random.nextInt(1, MAX_SPEED), random.nextInt(1, MAX_HEALTH));
-            case "Predator" -> new Predator(random.nextInt(1, MAX_SPEED),
-                    random.nextInt(1, MAX_HEALTH), random.nextInt(1, MAX_ATTACK));
-            default -> throw new IllegalStateException("Unexpected value: " + classZ.getSimpleName());
+            case "Herbivore" -> new Herbivore(random.nextInt(MINIMAL_VALUE_ENTITY_PARAMETER, MAX_SPEED),
+                    random.nextInt(1, MAX_HEALTH));
+            case "Predator" -> new Predator(random.nextInt(MINIMAL_VALUE_ENTITY_PARAMETER, MAX_SPEED),
+                    random.nextInt(MINIMAL_VALUE_ENTITY_PARAMETER, MAX_HEALTH),
+                    random.nextInt(MINIMAL_VALUE_ENTITY_PARAMETER, MAX_ATTACK));
+            default -> throw new IllegalStateException("Unexpected value: " + clazz.getSimpleName());
         };
     }
 }

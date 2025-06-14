@@ -4,6 +4,7 @@ import com.simulation.action.Action;
 import com.simulation.action.InitEntityAction;
 import com.simulation.action.MoveEntityAction;
 import com.simulation.action.SpawnEntityAction;
+import com.simulation.console.ConsoleSimulationManager;
 import com.simulation.entity.factory.EntityFactory;
 import com.simulation.entity.immovable.Grass;
 import com.simulation.entity.movable.Herbivore;
@@ -12,8 +13,11 @@ import com.simulation.field.FieldRender;
 
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class Simulation {
+
+    private static final int SECONDS_TO_WAIT_AFTER_RENDER = 1;
 
     private int moveCounter;
     private volatile boolean isPause;
@@ -37,7 +41,7 @@ public class Simulation {
     }
 
     public void startSimulation() {
-        initActions.forEach(e -> e.action(field));
+        initActions.forEach(e -> e.execute(field));
         while (!isQuit) {
             if (!isPause) {
                 nextTurn();
@@ -59,18 +63,21 @@ public class Simulation {
 
     private void nextTurn() {
         for (Action action : turnAction) {
-            action.action(field);
+            action.execute(field);
         }
         fieldRender.render();
         System.out.println("количество ходов: " + ++moveCounter);
-        System.out.println("""
-                Введите:
-                S - для продолжения
-                P - для паузы
-                Q - для выхода
-                """);
+        System.out.printf("""
+                        Введите:
+                        %s - для продолжения
+                        %s - для паузы
+                        %s - для выхода
+                        %n""",
+                ConsoleSimulationManager.START,
+                ConsoleSimulationManager.PAUSE,
+                ConsoleSimulationManager.QUIT);
         try {
-            Thread.sleep(1000);
+            TimeUnit.SECONDS.sleep(SECONDS_TO_WAIT_AFTER_RENDER);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }

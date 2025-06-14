@@ -9,11 +9,17 @@ import com.simulation.entity.movable.Herbivore;
 import com.simulation.entity.movable.Predator;
 import com.simulation.field.Field;
 import com.simulation.field.Position;
-import com.simulation.util.PositionUtil;
+import com.simulation.util.FieldUtil;
 
 import java.util.Random;
 
 public class InitEntityAction implements Action {
+
+    private static final int TREE_INIT_COUNT = 10;
+    private static final int GRASS_INIT_COUNT = 5;
+    private static final int ROCK_INIT_COUNT = 5;
+    private static final int HERBIVORE_INIT_COUNT = 3;
+    private static final int PREDATOR_INIT_COUNT = 3;
 
     private final Random random;
     private final EntityFactory entityFactory;
@@ -24,27 +30,19 @@ public class InitEntityAction implements Action {
     }
 
     @Override
-    public void action(Field field) {
-        for (int i = 0; i < 10; i++) {
-            generateEntityOnMap(field, Tree.class);
-        }
-        for (int i = 0; i < 5; i++) {
-            generateEntityOnMap(field, Grass.class);
-        }
-        for (int i = 0; i < 5; i++) {
-            generateEntityOnMap(field, Rock.class);
-        }
-        for (int i = 0; i < 3; i++) {
-            generateEntityOnMap(field, Herbivore.class);
-        }
-        for (int i = 0; i < 3; i++) {
-            generateEntityOnMap(field, Predator.class);
-        }
+    public void execute(Field field) {
+        generateEntityOnMap(field, Tree.class, TREE_INIT_COUNT);
+        generateEntityOnMap(field, Grass.class, GRASS_INIT_COUNT);
+        generateEntityOnMap(field, Rock.class, ROCK_INIT_COUNT);
+        generateEntityOnMap(field, Herbivore.class, HERBIVORE_INIT_COUNT);
+        generateEntityOnMap(field, Predator.class, PREDATOR_INIT_COUNT);
     }
 
-    private void generateEntityOnMap(Field field, Class<?> classZ) {
-        Position position = PositionUtil.getEmptyRandomPosition(field, random);
-        Entity entity = entityFactory.generate(classZ);
-        field.put(position, entity);
+    private void generateEntityOnMap(Field field, Class<?> clazz, int entitiesCount) {
+        for (int i = 0; i < entitiesCount; i++) {
+            Position position = FieldUtil.getEmptyRandomPosition(field, random);
+            Entity entity = entityFactory.generate(clazz);
+            field.put(position, entity);
+        }
     }
 }
