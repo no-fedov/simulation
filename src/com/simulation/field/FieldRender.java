@@ -8,23 +8,14 @@ import java.util.Objects;
 
 public class FieldRender {
 
-    private static final ProcessBuilder processBuilder;
-
-    static {
-        String nameOS = System.getProperty("os.name").toLowerCase();
-        if (nameOS.contains("linux") || nameOS.contains("mac")) {
-            processBuilder = new ProcessBuilder("/bin/bash", "-c", "clear").inheritIO();
-        } else {
-            processBuilder = new ProcessBuilder("cmd", "/c", "cls").inheritIO();
-        }
-    }
-
     private final Field field;
     private final String[][] representation;
+    private final ProcessBuilder cleanConsoleProcess;
 
-    public FieldRender(Field field) {
+    public FieldRender(Field field, ProcessBuilder cleanConsoleProcess) {
         this.field = field;
         representation = new String[field.getHeight()][field.getWidth()];
+        this.cleanConsoleProcess = cleanConsoleProcess;
     }
 
     public void render() {
@@ -52,7 +43,7 @@ public class FieldRender {
             Arrays.fill(row, null);
         }
         try {
-            processBuilder.start().waitFor();
+            cleanConsoleProcess.start().waitFor();
         } catch (InterruptedException | IOException e) {
             throw new RuntimeException(e);
         }

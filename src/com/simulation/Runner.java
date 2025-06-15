@@ -1,5 +1,6 @@
 package com.simulation;
 
+import com.simulation.console.CleanConsoleProcessBuilder;
 import com.simulation.console.ConsoleSimulationManager;
 import com.simulation.entity.factory.EntityFactory;
 import com.simulation.field.Field;
@@ -15,7 +16,7 @@ public class Runner {
 
     public static void main(String[] args) throws InterruptedException {
         Field field = new Field(HEIGHT, WIDTH);
-        FieldRender fieldRender = new FieldRender(field);
+        FieldRender fieldRender = new FieldRender(field, CleanConsoleProcessBuilder.getCommand());
         Random random = new Random();
         Simulation simulation = new Simulation(field, fieldRender, new EntityFactory(random), random);
 
